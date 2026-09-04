@@ -2,6 +2,7 @@
 from fastapi import APIRouter, UploadFile, File
 from pydantic import BaseModel
 from app.services.pdf_parser import extract_text_from_pdf
+from app.services.text_cleaner import clean_text
 from app.services.document import Document
 
 router = APIRouter()
@@ -25,6 +26,7 @@ async def upload_document(file: UploadFile = File(...)):
         buffer.write(await file.read())
 
     text = extract_text_from_pdf(file_path)
+    text = clean_text(text)
     document = Document(
     filename=file.filename,
     content=text,
